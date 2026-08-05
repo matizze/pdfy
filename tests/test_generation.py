@@ -1,10 +1,8 @@
 from __future__ import annotations
 
-import shutil
 from pathlib import Path
 
 import pdfplumber
-import pytest
 from pypdf import PdfReader
 
 from pdfy.engine import generate_pdf
@@ -93,8 +91,6 @@ def test_pdf_audit_preserves_accents_fonts_metadata_and_geometry(tmp_path: Path)
 
 
 def test_all_pages_render_and_visual_comparator_is_stable(tmp_path: Path) -> None:
-    if shutil.which("pdftoppm") is None:
-        pytest.skip("Poppler não está instalado neste ambiente.")
     result = generate_pdf(_document(), tmp_path / "rendered.pdf")
     render_dir = tmp_path / "render"
 

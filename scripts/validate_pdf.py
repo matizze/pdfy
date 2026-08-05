@@ -17,7 +17,7 @@ from pdfy.validation.pdf import (
     compare_with_golden,
     create_contact_sheet,
     inspect_pdf,
-    poppler_version,
+    pdfium_version,
     render_pdf,
 )
 
@@ -112,7 +112,7 @@ def main(argv: list[str] | None = None) -> int:
         render_report: dict[str, Any] = {
             "ok": len(pages) == technical.get("pages"),
             "dpi": args.dpi,
-            "poppler": poppler_version(),
+            "renderer": pdfium_version(),
             "pages": [str(path.resolve()) for path in pages],
             "contact_sheet": str(sheet.resolve()),
             "issues": [],

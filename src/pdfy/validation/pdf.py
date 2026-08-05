@@ -4,13 +4,12 @@ from __future__ import annotations
 
 import math
 import re
-import shutil
-import subprocess
 from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any
 
 import pdfplumber
+import pypdfium2 as pdfium
 from PIL import Image, ImageChops, ImageDraw, ImageFont, ImageStat
 from pypdf import PdfReader
 
@@ -346,15 +345,10 @@ def inspect_pdf(
     }
 
 
-def poppler_version() -> str:
-    executable = shutil.which("pdftoppm")
-    if not executable:
-        raise PdfValidationDependencyError("pdftoppm não encontrado. Instale o Poppler.")
-    completed = subprocess.run(
-        [executable, "-v"], capture_output=True, text=True, check=False
-    )
-    output = (completed.stderr or completed.stdout).strip().splitlines()
-    return output[0] if output else "pdftoppm (versão desconhecida)"
+def pdfium_version() -> str:
+    """Return the bundled renderer versions used for reproducible previews."""
+
+    return f"pypdfium2 {pdfium.PYPDFIUM_INFO}; PDFium {pdfium.PDFIUM_INFO}"
 
 
 def render_pdf(
@@ -363,38 +357,46 @@ def render_pdf(
     *,
     dpi: int = DEFAULT_RENDER_DPI,
 ) -> list[Path]:
-    """Render every page through Poppler and return naturally ordered PNGs."""
+    """Render every page through the bundled PDFium and return ordered PNGs."""
 
-    executable = shutil.which("pdftoppm")
-    if not executable:
-        raise PdfValidationDependencyError("pdftoppm não encontrado. Instale o Poppler.")
     pdf = Path(pdf_path)
+    if not pdf.is_file():
+        raise FileNotFoundError(f"PDF não encontrado: {pdf}")
+    if dpi < 72 or dpi > 600:
+        raise ValueError("dpi deve estar entre 72 e 600.")
     output_dir = Path(render_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    for pattern in ("page-*.png", "render-*.png"):
-        for stale in output_dir.glob(pattern):
-            stale.unlink()
-    prefix = output_dir / "render"
-    completed = subprocess.run(
-        [executable, "-png", "-r", str(dpi), "-cropbox", str(pdf), str(prefix)],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if completed.returncode:
-        detail = completed.stderr.strip() or "falha desconhecida"
-        raise RuntimeError(f"Poppler não conseguiu renderizar o PDF: {detail}")
-    generated = sorted(
-        output_dir.glob("render-*.png"),
-        key=lambda path: int(re.search(r"-(\d+)\.png$", path.name).group(1)),
-    )
-    if not generated:
-        raise RuntimeError("Poppler não produziu imagens para o PDF.")
+    for stale in output_dir.glob("page-*.png"):
+        stale.unlink()
+
     pages: list[Path] = []
-    for index, source in enumerate(generated, 1):
-        target = output_dir / f"page-{index:03d}.png"
-        source.replace(target)
-        pages.append(target)
+    document = pdfium.PdfDocument(str(pdf))
+    try:
+        scale = dpi / 72
+        for index in range(len(document)):
+            page = document[index]
+            bitmap = None
+            try:
+                bitmap = page.render(scale=scale, rotation=0)
+                image = bitmap.to_pil().convert("RGB")
+                try:
+                    target = output_dir / f"page-{index + 1:03d}.png"
+                    image.save(target, format="PNG", optimize=False)
+                    pages.append(target)
+                finally:
+                    image.close()
+            finally:
+                if bitmap is not None:
+                    bitmap.close()
+                page.close()
+    except Exception as exc:
+        for generated in pages:
+            generated.unlink(missing_ok=True)
+        raise RuntimeError(f"PDFium não conseguiu renderizar o PDF: {exc}") from exc
+    finally:
+        document.close()
+    if not pages:
+        raise RuntimeError("PDFium não produziu imagens para o PDF.")
     return pages
 
 
@@ -534,6 +536,6 @@ __all__ = [
     "compare_with_golden",
     "create_contact_sheet",
     "inspect_pdf",
-    "poppler_version",
+    "pdfium_version",
     "render_pdf",
 ]

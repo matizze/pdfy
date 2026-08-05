@@ -3,17 +3,23 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pdfy"
+name = "pdfyy"
 version = "0.1.0"
 description = "Motor determinístico da Matizze para PDFs A4 profissionais."
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
   "jsonschema>=4.23,<5",
+  "mcp>=2.0,<3",
   "pillow>=11.0,<13",
   "pdfplumber>=0.11,<1",
+  "pypdfium2>=5.12,<6",
   "pypdf>=5.0,<7",
   "reportlab>=4.2,<5",
 ]
+
+[project.scripts]
+pdfyy = "pdfy.mcp_server:main"
 
 [dependency-groups]
 dev = [
@@ -25,6 +31,8 @@ packages = ["src/pdfy"]
 
 [tool.hatch.build.targets.wheel.force-include]
 "schemas/document.schema.json" = "pdfy/schema/document.schema.json"
+"examples/minimal-document.json" = "pdfy/examples/minimal-document.json"
+"examples/complete-document.json" = "pdfy/examples/complete-document.json"
 
 [tool.pytest.ini_options]
 addopts = "-q"

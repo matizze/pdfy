@@ -9,19 +9,20 @@ Transformar conteúdo estruturado em PDF Matizze com o renderer deste repositór
 
 ## Fluxo obrigatório
 
-1. Ler `references/components.md` e escolher somente os componentes necessários.
-2. Consultar `references/content-limits.md` antes de redigir conteúdo extenso.
-3. Criar um JSON UTF-8 compatível com `schemas/document.schema.json`. Não adicionar propriedades visuais.
-4. Validar e gerar:
+1. Se o MCP `pdfy` estiver conectado, chamar `pdfy_get_creation_options` com `topic: "overview"`; consultar `topic: "component"` somente para os tipos necessários.
+2. Criar um JSON compatível com o schema `1`. Não adicionar propriedades visuais.
+3. Chamar `pdfy_validate_document` e corrigir todos os erros.
+4. Chamar `pdfy_generate_document` com um caminho local terminado em `.pdf`.
+5. Confirmar `ok: true` e inspecionar a contact sheet retornada.
+
+Sem MCP, ler `references/components.md`, consultar `references/content-limits.md` e usar:
 
 ```bash
 uv run python scripts/generate_pdf.py --input /caminho/documento.json --output /caminho/documento.pdf
 uv run python scripts/validate_pdf.py --input /caminho/documento.json --pdf /caminho/documento.pdf --render-dir /caminho/render
 ```
 
-5. Inspecionar `contact-sheet.png` e, quando necessário, as páginas individuais.
-6. Corrigir primeiro o conteúdo. Alterar o renderer somente para defeitos generalizáveis.
-7. Repetir até a validação retornar sucesso e não haver cortes, colisões, páginas pobres ou glifos quebrados.
+Corrigir primeiro o conteúdo. Alterar o renderer somente para defeitos generalizáveis. Repetir até a validação retornar sucesso e não haver cortes, colisões, páginas pobres ou glifos quebrados.
 
 ## JSON mínimo
 
@@ -42,7 +43,7 @@ uv run python scripts/validate_pdf.py --input /caminho/documento.json --pdf /cam
 
 ## Guardrails
 
-- Usar apenas `scripts/generate_pdf.py`; não escrever outro gerador.
+- Usar somente `pdfy_generate_document` ou `scripts/generate_pdf.py`; não escrever outro gerador.
 - Não inserir `kind`, `template`, layout, fonte, cor, tamanho, margem ou coordenadas no JSON.
 - Não inventar valores, datas, métricas, obrigações ou dados jurídicos/comerciais.
 - Tratar texto como texto simples; não usar HTML ou Markdown.
