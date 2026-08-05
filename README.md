@@ -13,11 +13,10 @@ O modelo fornece somente conteúdo. O `pdfy` controla capa, identidade visual, t
 - Auditoria: pypdf, pdfplumber e trace geométrico próprio.
 - Renderização de previews: PDFium via pypdfium2, sem dependência do Poppler.
 - Transporte MCP: STDIO.
-- Distribuição Python e comando executável: `pdfyy`.
-- Pacote para import em Python: `pdfy`.
+- Distribuição Python, comando executável e pacote para import: `pdfy`.
 - Repositório público: [github.com/matizze/pdfy](https://github.com/matizze/pdfy).
 
-O nome diferente da distribuição é intencional: `pdfy` já está ocupado no índice público de pacotes Python, enquanto o código continua sendo importado como `pdfy`.
+O projeto é distribuído diretamente pelo repositório público da Matizze e não pelo PyPI. Isso permite manter o nome oficial `pdfy` em todas as superfícies sem disputar o pacote homônimo existente no índice público.
 
 ## O que é automático
 
@@ -68,50 +67,43 @@ O comando de geração também grava `outputs/complete-document.layout.json`, co
 
 ## Servidor MCP via STDIO
 
-O executável `pdfyy` inicia um servidor MCP local. Ele não abre porta, não envia documentos para um serviço externo e usa `stdin`/`stdout` exclusivamente para o protocolo.
+O executável `pdfy` inicia um servidor MCP local. Ele não abre porta, não envia documentos para um serviço externo e usa `stdin`/`stdout` exclusivamente para o protocolo.
 
 Durante o desenvolvimento:
 
 ```bash
-uv run pdfyy
+uv run pdfy
 ```
 
 O processo ficar silencioso e não encerrar é o comportamento esperado: ele está aguardando um cliente MCP. Logs devem sempre ir para `stderr`, porque qualquer texto comum em `stdout` corrompe o transporte STDIO.
 
 ### Uso com `uvx`
 
-Depois que `pdfyy` for publicado em um índice acessível ao computador cliente:
+O repositório público pode ser executado diretamente, sem PyPI e sem informar versão:
 
 ```bash
-uvx pdfyy@0.1.0
+uvx --from "git+https://github.com/matizze/pdfy.git" pdfy
 ```
 
-O `uvx` baixa o pacote, cria um ambiente isolado em cache e executa o comando. Na primeira execução, o computador precisa de acesso ao índice; depois disso, o cache pode evitar novos downloads. O pacote não fica embutido no `uvx`.
+O `uvx` clona a fonte, resolve a branch padrão para um commit, cria um ambiente isolado em cache e executa o comando. Na primeira execução, o computador precisa de Git e acesso à internet; depois disso, o cache evita trabalho desnecessário. O pacote não fica embutido no `uvx`.
 
-Como o repositório é público, qualquer computador com Git e acesso à internet pode instalar diretamente do GitHub:
+Para obrigar o `uv` a verificar atualizações no repositório:
 
 ```bash
-uvx --from "git+https://github.com/matizze/pdfy.git@<tag-ou-commit>" pdfyy
+uvx --refresh --from "git+https://github.com/matizze/pdfy.git" pdfy
 ```
 
-Para distribuição previsível, prefira uma versão publicada ou um tag/commit imutável. Evite apontar clientes de produção para `main`.
+Informar versão não é obrigatório. Quando a reprodutibilidade for mais importante do que receber atualizações, fixe opcionalmente um tag ou commit:
+
+```bash
+uvx --from "git+https://github.com/matizze/pdfy.git@<tag-ou-commit>" pdfy
+```
+
+Não use `uvx pdfy` sem `--from`: esse formato consulta o PyPI e pode executar o pacote homônimo que não pertence à Matizze.
 
 ### Configuração genérica de um cliente MCP
 
-Após publicação no índice:
-
-```json
-{
-  "mcpServers": {
-    "pdfy": {
-      "command": "uvx",
-      "args": ["pdfyy@0.1.0"]
-    }
-  }
-}
-```
-
-Usando o repositório público, sem credenciais do GitHub:
+Use o repositório público, sem credenciais do GitHub e sem versão obrigatória:
 
 ```json
 {
@@ -120,8 +112,8 @@ Usando o repositório público, sem credenciais do GitHub:
       "command": "uvx",
       "args": [
         "--from",
-        "git+https://github.com/matizze/pdfy.git@<tag-ou-commit>",
-        "pdfyy"
+        "git+https://github.com/matizze/pdfy.git",
+        "pdfy"
       ]
     }
   }
@@ -420,28 +412,26 @@ uv build
 Teste o wheel como ferramenta isolada:
 
 ```bash
-uvx --from dist/pdfyy-0.1.0-py3-none-any.whl pdfyy
+uvx --from dist/pdfy-0.1.0-py3-none-any.whl pdfy
 ```
 
 O wheel inclui schema, exemplos mínimo e completo, fontes, logos, backgrounds e gráficos necessários em runtime. Sempre teste fora do checkout antes de publicar, porque um ambiente editável pode mascarar arquivos ausentes no pacote.
 
 Para testar o protocolo interativamente, use o MCP Inspector conforme a documentação do SDK MCP. O Inspector requer Node.js/npx; a suíte normal não requer.
 
-## Publicação
+## Distribuição pelo GitHub
 
-Este repositório estar público no GitHub não torna `uvx pdfyy` globalmente disponível. Para esse comando curto funcionar em qualquer computador, publique `pdfyy` em um índice Python acessível. Até lá, use a instalação via URL Git pública documentada acima.
+O canal oficial é o repositório público. Não é necessário publicar no PyPI nem informar uma versão para executar o servidor com `uvx --from git+... pdfy`.
 
 Fluxo recomendado para uma versão:
 
-1. escolher a política de distribuição: índice privado da Matizze ou PyPI;
-2. definir licença e metadados legais antes de uma publicação pública;
-3. atualizar `version` em `pyproject.toml` e `src/pdfy/__init__.py`;
-4. executar testes, validação visual e teste do wheel;
-5. criar um tag imutável;
-6. publicar o artefato no índice escolhido;
-7. configurar clientes com uma versão exata, como `pdfyy@0.1.0`.
+1. atualizar `version` em `pyproject.toml` e `src/pdfy/__init__.py`;
+2. executar testes, validação visual e teste do wheel;
+3. criar um tag imutável, como `v0.1.0`;
+4. usar o tag nos clientes que precisam de comportamento estável;
+5. manter a URL sem tag nos clientes que devem acompanhar a branch padrão.
 
-O projeto não publica, cria tags nem altera remotos automaticamente.
+O campo `version` continua existindo nos metadados internos do pacote, mas não precisa aparecer no comando `uvx`. Tags são opcionais e servem apenas para fixar uma revisão conhecida.
 
 ## Estrutura principal
 
@@ -449,7 +439,7 @@ O projeto não publica, cria tags nem altera remotos automaticamente.
 pdfy/
 ├── README.md                  # documentação humana
 ├── SKILL.md                   # instrução canônica para agentes
-├── pyproject.toml             # pacote pdfyy e comando MCP
+├── pyproject.toml             # pacote pdfy e comando MCP
 ├── schemas/                   # contrato JSON oficial
 ├── examples/                  # documentos mínimo, completo e longo
 ├── scripts/                   # geração e validação por CLI
@@ -488,12 +478,12 @@ pdfy/
 - A tool de geração escreve no filesystem do computador onde o servidor MCP está rodando, não no computador remoto do modelo.
 - A contact sheet ajuda a revisão, mas a aprovação visual final continua humana.
 - A regressão visual depende da versão fixada do PDFium e pode exigir novo golden após uma atualização deliberada.
-- O pacote ainda precisa ser publicado em um índice para que o comando curto `uvx pdfyy@versão` funcione; via URL Git pública ele já pode ser executado sem autenticação.
+- O comando exige `--from` com a URL Git; `uvx pdfy` sozinho consulta o pacote homônimo no PyPI e não deve ser usado.
 - Não há licença pública definida neste repositório; resolva isso antes de qualquer distribuição pública.
 
 ## Próximas versões recomendadas
 
-1. Publicar `pdfyy` em um índice privado da Matizze e automatizar releases assinados.
+1. Automatizar tags e releases assinados no GitHub.
 2. Adicionar CI para testes, build do wheel, auditoria completa e comparação golden na versão fixada do PDFium.
 3. Testar explicitamente os wheels em macOS, Linux e Windows.
 4. Definir uma política de retenção para PDFs e previews gerados por clientes MCP.

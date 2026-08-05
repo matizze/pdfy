@@ -3,7 +3,7 @@ requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [project]
-name = "pdfyy"
+name = "pdfy"
 version = "0.1.0"
 description = "Motor determinístico da Matizze para PDFs A4 profissionais."
 readme = "README.md"
@@ -19,7 +19,7 @@ dependencies = [
 ]
 
 [project.scripts]
-pdfyy = "pdfy.mcp_server:main"
+pdfy = "pdfy.mcp_server:main"
 
 [dependency-groups]
 dev = [
