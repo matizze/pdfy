@@ -1,0 +1,20 @@
+{
+  "name": "matizze-pdfy",
+  "interface": {
+    "displayName": "Plugins Matizze"
+  },
+  "plugins": [
+    {
+      "name": "pdfy",
+      "source": {
+        "source": "local",
+        "path": "./plugins/pdfy"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

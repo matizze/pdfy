@@ -1,0 +1,17 @@
+{
+  "name": "matizze-pdfy",
+  "owner": {
+    "name": "Matizze"
+  },
+  "metadata": {
+    "description": "Plugins oficiais da Matizze para criação de documentos profissionais."
+  },
+  "plugins": [
+    {
+      "name": "pdfy",
+      "source": "./plugins/pdfy",
+      "description": "Gera e valida PDFs Matizze profissionais a partir de JSON estruturado.",
+      "category": "productivity"
+    }
+  ]
+}

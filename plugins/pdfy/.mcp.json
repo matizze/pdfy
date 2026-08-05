@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "pdfy": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/matizze/pdfy.git",
+        "pdfy"
+      ]
+    }
+  }
+}

@@ -122,6 +122,51 @@ Use o repositório público, sem credenciais do GitHub e sem versão obrigatóri
 
 Se o aplicativo não encontrar `uvx`, use o caminho absoluto retornado por `which uvx` no macOS/Linux ou `where uvx` no Windows. Reinicie o cliente MCP depois de alterar sua configuração.
 
+## Plugins para Codex e Claude Code
+
+O repositório também distribui o plugin `pdfy`: uma Skill curta que orienta o agente e o servidor MCP STDIO com as três tools oficiais. O plugin baixa o pacote diretamente deste repositório público com `uvx`; não usa PyPI e não envia documentos para a Matizze.
+
+Pré-requisitos em cada máquina: Git, `uv`/`uvx` no `PATH` e acesso ao GitHub apenas na primeira instalação ou atualização. A geração continua local e grava arquivos apenas no caminho que o agente solicitar.
+
+### Codex
+
+Adicione o marketplace do repositório e instale o plugin:
+
+```bash
+codex plugin marketplace add matizze/pdfy
+codex plugin add pdfy@matizze-pdfy
+```
+
+Reinicie o Codex ou abra uma nova sessão. Para buscar alterações publicadas posteriormente:
+
+```bash
+codex plugin marketplace upgrade matizze-pdfy
+```
+
+O Codex exibirá as tools `pdfy_get_creation_options`, `pdfy_validate_document` e `pdfy_generate_document`. A última grava PDFs e previews locais, portanto a aprovação de escrita continua sob controle do cliente.
+
+### Claude Code
+
+Adicione o mesmo marketplace e instale no escopo pessoal (o padrão):
+
+```bash
+claude plugin marketplace add matizze/pdfy
+claude plugin install pdfy@matizze-pdfy
+```
+
+Abra uma nova sessão ou use `/reload-plugins`. Para atualizar depois de uma publicação:
+
+```bash
+claude plugin marketplace update matizze-pdfy
+claude plugin update pdfy@matizze-pdfy
+```
+
+O plugin aparece como `pdfy`; a Skill pode ser chamada como `/pdfy:pdfy` e também é acionável pelo agente conforme o contexto. Para testar o checkout sem instalar nada, execute `claude --plugin-dir ./plugins/pdfy` na raiz do repositório.
+
+Os manifests de distribuição ficam em `plugins/pdfy/`, o catálogo do Codex em `.agents/plugins/marketplace.json` e o do Claude Code em `.claude-plugin/marketplace.json`. Os catálogos permitem instalar a partir deste repositório; a inclusão nos diretórios universais públicos do Codex/ChatGPT e da Anthropic exige submissão e revisão separadas.
+
+O plugin usa a versão interna `0.1.0` nos manifests, apenas para controle de atualização dos clientes. Isso não publica nada no PyPI e não muda o comando `uvx`; em uma nova release, atualize as duas versões de manifesto junto com a versão do pacote.
+
 ### Fluxo recomendado para um agente
 
 1. Chamar `pdfy_get_creation_options` com `topic: "overview"`.
@@ -439,6 +484,9 @@ O campo `version` continua existindo nos metadados internos do pacote, mas não 
 pdfy/
 ├── README.md                  # documentação humana
 ├── SKILL.md                   # instrução canônica para agentes
+├── plugins/pdfy/              # plugin portátil para Codex e Claude Code
+├── .agents/plugins/           # catálogo local/remoto do Codex
+├── .claude-plugin/            # catálogo do Claude Code
 ├── pyproject.toml             # pacote pdfy e comando MCP
 ├── schemas/                   # contrato JSON oficial
 ├── examples/                  # documentos mínimo, completo e longo

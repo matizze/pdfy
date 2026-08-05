@@ -1,0 +1,26 @@
+{
+  "name": "pdfy",
+  "version": "0.1.0",
+  "description": "Gera e valida PDFs Matizze profissionais a partir de JSON estruturado.",
+  "author": {
+    "name": "Matizze",
+    "url": "https://github.com/matizze"
+  },
+  "homepage": "https://github.com/matizze/pdfy",
+  "repository": "https://github.com/matizze/pdfy",
+  "keywords": ["pdf", "matizze", "documents", "mcp"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "pdfy",
+    "shortDescription": "PDFs Matizze profissionais a partir de conteúdo estruturado.",
+    "longDescription": "Transforma JSON de conteúdo em PDFs A4 Matizze com capa, layout, paginação, validação e encerramento controlados pelo renderer.",
+    "developerName": "Matizze",
+    "category": "Productivity",
+    "capabilities": ["Read", "Write"],
+    "websiteURL": "https://github.com/matizze/pdfy",
+    "defaultPrompt": [
+      "Use pdfy para criar um PDF Matizze profissional a partir do conteúdo que eu fornecer."
+    ]
+  },
+  "mcpServers": "./.mcp.json"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "pdfy",
+  "displayName": "pdfy",
+  "version": "0.1.0",
+  "description": "Gera e valida PDFs Matizze profissionais a partir de JSON estruturado.",
+  "author": {
+    "name": "Matizze",
+    "url": "https://github.com/matizze"
+  },
+  "homepage": "https://github.com/matizze/pdfy",
+  "repository": "https://github.com/matizze/pdfy",
+  "keywords": ["pdf", "matizze", "documents", "mcp"],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}
