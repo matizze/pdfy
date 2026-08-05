@@ -15,6 +15,7 @@ O modelo fornece somente conteúdo. O `pdfy` controla capa, identidade visual, t
 - Transporte MCP: STDIO.
 - Distribuição Python e comando executável: `pdfyy`.
 - Pacote para import em Python: `pdfy`.
+- Repositório público: [github.com/matizze/pdfy](https://github.com/matizze/pdfy).
 
 O nome diferente da distribuição é intencional: `pdfy` já está ocupado no índice público de pacotes Python, enquanto o código continua sendo importado como `pdfy`.
 
@@ -87,7 +88,7 @@ uvx pdfyy@0.1.0
 
 O `uvx` baixa o pacote, cria um ambiente isolado em cache e executa o comando. Na primeira execução, o computador precisa de acesso ao índice; depois disso, o cache pode evitar novos downloads. O pacote não fica embutido no `uvx`.
 
-Enquanto o repositório for privado, também é possível instalar diretamente do GitHub em uma máquina autenticada:
+Como o repositório é público, qualquer computador com Git e acesso à internet pode instalar diretamente do GitHub:
 
 ```bash
 uvx --from "git+https://github.com/matizze/pdfy.git@<tag-ou-commit>" pdfyy
@@ -110,7 +111,7 @@ Após publicação no índice:
 }
 ```
 
-Usando o repositório privado:
+Usando o repositório público, sem credenciais do GitHub:
 
 ```json
 {
@@ -428,7 +429,7 @@ Para testar o protocolo interativamente, use o MCP Inspector conforme a document
 
 ## Publicação
 
-Este repositório estar no GitHub não torna `uvx pdfyy` globalmente disponível. Para esse comando funcionar em qualquer computador, publique `pdfyy` em um índice Python acessível ou use a instalação via Git autenticado.
+Este repositório estar público no GitHub não torna `uvx pdfyy` globalmente disponível. Para esse comando curto funcionar em qualquer computador, publique `pdfyy` em um índice Python acessível. Até lá, use a instalação via URL Git pública documentada acima.
 
 Fluxo recomendado para uma versão:
 
@@ -487,7 +488,7 @@ pdfy/
 - A tool de geração escreve no filesystem do computador onde o servidor MCP está rodando, não no computador remoto do modelo.
 - A contact sheet ajuda a revisão, mas a aprovação visual final continua humana.
 - A regressão visual depende da versão fixada do PDFium e pode exigir novo golden após uma atualização deliberada.
-- O pacote ainda precisa ser publicado em um índice para que `uvx pdfyy@versão` funcione sem acesso ao repositório privado.
+- O pacote ainda precisa ser publicado em um índice para que o comando curto `uvx pdfyy@versão` funcione; via URL Git pública ele já pode ser executado sem autenticação.
 - Não há licença pública definida neste repositório; resolva isso antes de qualquer distribuição pública.
 
 ## Próximas versões recomendadas
