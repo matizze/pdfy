@@ -1,0 +1,15 @@
+{
+  "schema": "1",
+  "source": "examples/complete-document.json",
+  "renderer": "pdfy 0.1.0",
+  "dpi": 144,
+  "color_mode": "RGB",
+  "pages": 10,
+  "comparison": {
+    "ignored_border_pixels": 2,
+    "maximum_mean_absolute_error": 1.5,
+    "changed_pixel_delta": 32,
+    "maximum_changed_fraction": 0.005
+  },
+  "update_policy": "Atualizar somente após validação técnica e inspeção visual explícita."
+}

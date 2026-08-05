@@ -1,0 +1,94 @@
+{
+  "schema": "1",
+  "title": "Teste editorial de paginação contínua",
+  "subtitle": "Conteúdo extenso para comprovar que o pdfy cria continuações sem cortes ou sobreposições.",
+  "recipient": "Equipe de qualidade",
+  "date": "2026-08-05",
+  "sections": [
+    {
+      "title": "Uma seção que precisa ocupar várias páginas",
+      "subtitle": "Parágrafos, listas e tabela devem continuar dentro da área útil",
+      "components": [
+        {
+          "type": "text",
+          "title": "Contexto extensivo",
+          "content": "Este documento testa a capacidade de paginação do motor com uma única seção longa. O objetivo é observar a transição entre páginas sem reduzir a tipografia e sem permitir que o conteúdo atravesse o rodapé.\n\nCada parágrafo representa uma unidade editorial independente. Ao faltar espaço, o fluxo deve continuar em uma nova página com o cabeçalho da seção repetido e um marcador de continuação claramente visível.\n\nO conteúdo permanece em português para verificar acentos, cedilha e combinações frequentes como informação, execução, análise, decisão e próximo. A fonte incorporada deve preservar todos esses glifos.\n\nA paginação correta não depende de estimativas frágeis por quantidade de caracteres. O renderer mede o conteúdo na largura disponível, respeita a entrelinha e cria a quebra antes de invadir a área segura inferior.\n\nUm parágrafo pode ser dividido quando realmente excede o espaço restante, mas nunca deve desaparecer ou ser truncado. A extração posterior do PDF ajuda a verificar se sentinelas importantes continuam presentes.\n\nBlocos atômicos, como cartões de assinatura, permanecem inteiros. Blocos naturalmente divisíveis, como texto, listas e tabelas, podem continuar em páginas adicionais sem perder seus cabeçalhos ou sua ordem.\n\nEsta sequência também verifica que o rodapé permanece estável. A linha divisória, o nome da seção e o número da página devem aparecer sempre no mesmo lugar, separados do corpo por espaço suficiente.\n\nO design deve continuar sóbrio mesmo quando a densidade aumenta. Respiro e hierarquia são preservados antes de qualquer tentativa de condensação, mantendo o corpo acima do mínimo legível.\n\nA nona unidade reforça o caráter determinístico do processo. O mesmo JSON, as mesmas fontes e os mesmos ativos precisam produzir o mesmo PDF, sem datas implícitas ou identificadores variáveis.\n\nA décima unidade encerra o primeiro bloco textual com uma sentinela verificável: PAGINACAO-TEXTO-CONCLUIDA."
+        },
+        {
+          "type": "list",
+          "title": "Lista longa de verificações",
+          "items": [
+            "Verificar a margem esquerda e o alinhamento dos títulos.",
+            "Verificar a margem direita em linhas de texto extensas.",
+            "Verificar que o primeiro item aparece depois do título do componente.",
+            "Verificar que nenhum marcador invade o texto.",
+            "Verificar a continuidade da numeração de páginas.",
+            "Verificar o cabeçalho repetido nas continuações.",
+            "Verificar a distância segura acima do rodapé.",
+            "Verificar a incorporação da família Montserrat.",
+            "Verificar a extração de palavras com acentuação.",
+            "Verificar a ausência de caracteres de substituição.",
+            "Verificar que o PDF permanece A4 em todas as páginas.",
+            "Verificar que todas as páginas têm rotação zero.",
+            "Verificar que a capa é a primeira página.",
+            "Verificar que o encerramento é a última página.",
+            "Verificar que a seção começou em página própria.",
+            "Verificar que nenhum item da lista foi perdido.",
+            "Verificar que os blocos mantêm espaçamento consistente.",
+            "Verificar que o texto permanece vetorial e selecionável.",
+            "Verificar que os fundos raster não contêm texto do conteúdo.",
+            "Verificar a sentinela PAGINACAO-LISTA-CONCLUIDA."
+          ]
+        },
+        {
+          "type": "table",
+          "title": "Tabela longa de controle",
+          "columns": ["Item", "Critério", "Resultado esperado"],
+          "rows": [
+            ["01", "Formato", "A4 vertical"],
+            ["02", "Capa", "Automática"],
+            ["03", "Seção", "Página nova"],
+            ["04", "Continuação", "Cabeçalho repetido"],
+            ["05", "Corpo", "Nunca abaixo de 8 pt"],
+            ["06", "Rodapé", "Área preservada"],
+            ["07", "Texto", "Extraível"],
+            ["08", "Fontes", "Incorporadas"],
+            ["09", "Tabela", "Cabeçalho repetido"],
+            ["10", "Linhas", "Sem corte"],
+            ["11", "Página", "Sem overflow"],
+            ["12", "Objetos", "Dentro do MediaBox"],
+            ["13", "Acentos", "Preservados"],
+            ["14", "Marca", "Ativos locais"],
+            ["15", "Rede", "Não necessária"],
+            ["16", "Metadados", "Determinísticos"],
+            ["17", "Identificador", "Invariável"],
+            ["18", "Componentes", "Ordem preservada"],
+            ["19", "Espaço", "Respiro consistente"],
+            ["20", "Quebra", "Antes do rodapé"],
+            ["21", "Validação", "Relatório JSON"],
+            ["22", "Render", "Todas as páginas"],
+            ["23", "Contact sheet", "Gerada"],
+            ["24", "Imagem", "RGB estável"],
+            ["25", "Título", "Sem colisão"],
+            ["26", "Subtítulo", "Quebra segura"],
+            ["27", "Linhas", "Grade discreta"],
+            ["28", "Header", "Azul oficial"],
+            ["29", "Alternância", "Superfície clara"],
+            ["30", "Sentinela", "PAGINACAO-TABELA-CONCLUIDA"]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Uma segunda seção obrigatoriamente isolada",
+      "subtitle": "O título deve aparecer no início de uma nova página",
+      "components": [
+        {
+          "type": "callout",
+          "title": "Sentinela final",
+          "content": "SECAO-DOIS-INICIO-PROPRIO confirma que o motor não compartilhou a página inicial desta seção com a seção anterior."
+        }
+      ]
+    }
+  ]
+}

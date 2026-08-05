@@ -1,0 +1,160 @@
+{
+  "schema": "1",
+  "title": "Um sistema documental simples, consistente e pronto para escalar",
+  "subtitle": "Demonstração integral dos componentes do pdfy com conteúdo estruturado e apresentação determinística.",
+  "recipient": "Equipe Matizze",
+  "date": "2026-08-05",
+  "sections": [
+    {
+      "title": "O documento em uma página",
+      "subtitle": "Uma visão objetiva do motor e de seu contrato de uso",
+      "components": [
+        {
+          "type": "metrics",
+          "title": "Indicadores do documento",
+          "items": [
+            {"label": "Contrato", "value": "13 componentes", "note": "Vocabulário público enxuto"},
+            {"label": "Formato", "value": "A4 vetorial", "note": "Texto e gráficos preservados"},
+            {"label": "Padrão", "value": "1 template", "note": "Identidade oficial Matizze"}
+          ]
+        },
+        {
+          "type": "text",
+          "title": "Resumo executivo",
+          "content": "O pdfy transforma um JSON de conteúdo em um documento profissional sem transferir decisões visuais para o usuário. Capa, hierarquia, espaçamento, paginação, rodapé e encerramento são definidos pelo motor.\n\nA proposta é reduzir a carga editorial de modelos pequenos e preservar consistência entre documentos de finalidades diferentes."
+        },
+        {
+          "type": "highlights",
+          "title": "Princípios do produto",
+          "items": [
+            "O modelo fornece conteúdo; o pdfy controla a apresentação.",
+            "Mais páginas são preferíveis a texto pequeno ou blocos comprimidos.",
+            "A validação deve tornar problemas acionáveis antes da entrega."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Componentes para explicar, priorizar e decidir",
+      "subtitle": "Blocos reutilizáveis sem propriedades visuais no JSON",
+      "components": [
+        {
+          "type": "cards",
+          "title": "Capacidades centrais",
+          "items": [
+            {"tag": "CONTEÚDO", "title": "Texto fluido", "description": "Parágrafos extensos são divididos entre páginas sem reduzir o corpo para tamanhos ilegíveis."},
+            {"tag": "SÍNTESE", "title": "Cards e destaques", "description": "Ideias relacionadas ganham hierarquia consistente, com respiro e acentos oficiais da marca."},
+            {"tag": "DADOS", "title": "Tabelas e gráficos", "description": "Informações estruturadas permanecem vetoriais, legíveis e verificáveis no PDF final."},
+            {"tag": "FLUXO", "title": "Passos e timeline", "description": "Sequências e marcos recebem numeração e composição automática, sem coordenadas no conteúdo."}
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Decisão de produto",
+          "content": "O pdfy oferece um padrão visual oficial, não uma DSL de layout. Essa restrição é o que permite produzir documentos consistentes com entradas pequenas."
+        },
+        {
+          "type": "comparison",
+          "title": "Antes e depois do contrato estruturado",
+          "left_label": "Sem pdfy",
+          "right_label": "Com pdfy",
+          "rows": [
+            {"label": "Entrada", "left": "Texto e instruções de layout misturados", "right": "Somente conteúdo estruturado"},
+            {"label": "Apresentação", "left": "Decisões refeitas a cada documento", "right": "Tokens e componentes determinísticos"},
+            {"label": "Qualidade", "left": "Revisão visual informal", "right": "Validação técnica e inspeção renderizada"}
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Da entrada validada ao PDF revisado",
+      "subtitle": "Um processo curto, repetível e observável",
+      "components": [
+        {
+          "type": "steps",
+          "title": "Fluxo de produção",
+          "items": [
+            {"title": "Estruturar", "description": "Organizar o conteúdo usando apenas os campos públicos do schema."},
+            {"title": "Validar", "description": "Detectar campos desconhecidos, limites excedidos e relações inválidas."},
+            {"title": "Gerar", "description": "Compor capa, seções, continuações e encerramento com ReportLab."},
+            {"title": "Inspecionar", "description": "Renderizar todas as páginas e revisar a contact sheet."}
+          ]
+        },
+        {
+          "type": "timeline",
+          "title": "Ciclo recomendado",
+          "items": [
+            {"period": "Etapa 1", "title": "Conteúdo", "description": "Definir objetivo, público e mensagens."},
+            {"period": "Etapa 2", "title": "Estrutura", "description": "Escolher componentes sem instruções visuais."},
+            {"period": "Etapa 3", "title": "Renderização", "description": "Gerar o arquivo de forma determinística."},
+            {"period": "Etapa 4", "title": "Qualidade", "description": "Validar estrutura, geometria e render final."}
+          ]
+        },
+        {
+          "type": "list",
+          "title": "Critérios de aceite",
+          "items": [
+            "Nenhum componente fora da área útil.",
+            "Nenhum texto cortado, sobreposto ou ilegível.",
+            "Todas as seções iniciadas em página nova.",
+            "Capa e encerramento presentes automaticamente.",
+            "Fontes Montserrat incorporadas e texto extraível."
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Dados legíveis para acompanhar a qualidade",
+      "subtitle": "Valores ilustrativos usados somente para demonstrar os componentes",
+      "components": [
+        {
+          "type": "chart",
+          "title": "Cobertura desta demonstração",
+          "unit": "%",
+          "items": [
+            {"label": "Componentes", "value": 100, "note": "Todos os tipos públicos"},
+            {"label": "Fontes locais", "value": 100, "note": "Sem dependência de rede"},
+            {"label": "Páginas renderizadas", "value": 100, "note": "Inspeção integral"},
+            {"label": "Decisões no código", "value": 100, "note": "Sem estilos no JSON"}
+          ]
+        },
+        {
+          "type": "table",
+          "title": "Mapa de responsabilidades",
+          "columns": ["Camada", "Responsabilidade", "Saída"],
+          "rows": [
+            ["Conteúdo", "Mensagens, dados e ordem das seções", "JSON"],
+            ["Parser", "Contrato, normalização e erros úteis", "Documento validado"],
+            ["Renderer", "Composição, paginação e vetores", "PDF A4"],
+            ["Validação", "Estrutura, geometria e imagem", "Relatório e PNGs"]
+          ]
+        }
+      ]
+    },
+    {
+      "title": "Condições editoriais e próximos usos",
+      "subtitle": "Campos comerciais permanecem explícitos e nunca são inventados",
+      "components": [
+        {
+          "type": "investment",
+          "title": "Exemplo de quadro de investimento",
+          "items": [
+            {"label": "Configuração", "value": "A definir", "description": "Escopo e condição comercial devem vir da fonte autorizada."},
+            {"label": "Operação", "value": "A definir", "description": "Periodicidade e valores não são calculados pelo pdfy."}
+          ],
+          "total": {"label": "Investimento total", "value": "A definir"},
+          "notes": ["Este bloco demonstra apresentação; não constitui proposta comercial."]
+        },
+        {
+          "type": "signature",
+          "title": "Registro de concordância",
+          "intro": "Local e data: [PREENCHER]",
+          "signers": [
+            {"name": "[PREENCHER]", "role": "RESPONSÁVEL", "organization": "[PREENCHER]", "identifier": "Documento: [PREENCHER]"},
+            {"name": "[PREENCHER]", "role": "RESPONSÁVEL", "organization": "[PREENCHER]", "identifier": "Documento: [PREENCHER]"}
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "pdfy"
+  short_description: "PDFs Matizze a partir de JSON estruturado"
+  default_prompt: "Use $pdfy para transformar meu conteúdo estruturado em um PDF Matizze profissional e validado."

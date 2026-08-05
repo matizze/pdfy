@@ -1,0 +1,15 @@
+{
+  "schema": "1",
+  "title": "Documento essencial Matizze",
+  "sections": [
+    {
+      "title": "Mensagem principal",
+      "components": [
+        {
+          "type": "text",
+          "content": "Este exemplo demonstra o contrato mínimo do pdfy: conteúdo estruturado, capa automática, página interna e encerramento fixo."
+        }
+      ]
+    }
+  ]
+}
