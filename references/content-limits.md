@@ -8,6 +8,7 @@ Os limites absolutos protegem legibilidade e recursos. Os limites visuais por bl
 | Subtítulo | 180 caracteres |
 | Destinatário | 120 caracteres |
 | Seções | 20 |
+| Markdown (`content`) | 200.000 caracteres |
 | Componentes por seção | 30 |
 | Texto | 20.000 caracteres |
 | Título interno | 70 caracteres |

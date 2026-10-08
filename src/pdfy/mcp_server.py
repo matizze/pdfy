@@ -45,8 +45,10 @@ def validate_document_payload(document: dict[str, Any]) -> dict[str, Any]:
         "ok": True,
         "schema_version": parsed.schema,
         "title": parsed.title,
+        "mode": "content" if parsed.content is not None else "sections",
         "sections": len(parsed.sections),
         "components": sum(len(section.components) for section in parsed.sections),
+        "content_characters": len(parsed.content or ""),
         "issues": [],
     }
 
@@ -137,7 +139,7 @@ def pdfy_get_creation_options(
     Use topic='overview' primeiro. Para detalhes de um componente, use
     topic='component' e component_type. Para o JSON Schema completo, use
     topic='schema'. Para um documento pronto, use topic='example' e escolha
-    example='minimal' ou example='complete'.
+    example='minimal', 'complete' ou 'markdown'.
     """
 
     return get_creation_options(topic, component_type, example)

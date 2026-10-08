@@ -78,13 +78,14 @@ def _normalize(value: Any, path: tuple[Any, ...] = ()) -> Any:
 
 
 def _build_document(data: dict[str, Any]) -> Document:
+    raw_sections = data.get("sections") or ()
     sections = tuple(
         Section(
             title=section["title"],
             subtitle=section.get("subtitle"),
             components=tuple(Component.from_mapping(item) for item in section["components"]),
         )
-        for section in data["sections"]
+        for section in raw_sections
     )
     return Document(
         schema=data["schema"],
@@ -93,6 +94,7 @@ def _build_document(data: dict[str, Any]) -> Document:
         recipient=data.get("recipient"),
         date=data.get("date"),
         sections=sections,
+        content=data.get("content"),
     )
 
 

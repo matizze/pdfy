@@ -102,6 +102,7 @@ class RenderContext:
         self.page_no = 0
         self.current_page: PageTrace | None = None
         self.y = 0.0
+        self._page_top = 0.0
         self._section_index: int | None = None
         self._section_title = ""
         self._section_subtitle = ""
@@ -176,6 +177,7 @@ class RenderContext:
         self.y = draw_section_header(
             self, self._section_title, self._section_subtitle, continued=False,
         )
+        self._page_top = self.y
 
     def continuation(self) -> None:
         if self._section_index is None:
@@ -191,6 +193,103 @@ class RenderContext:
         self.y = draw_section_header(
             self, self._section_title, self._section_subtitle, continued=True,
         )
+        self._page_top = self.y
+
+    def start_content(self) -> None:
+        """Open the first prose page used by the document-level Markdown mode."""
+
+        self.finish_page()
+        self._section_index = None
+        self._section_title = ""
+        self._section_subtitle = ""
+        self.open_page("content")
+        from .section import draw_content_header
+
+        self.y = draw_content_header(self)
+        self._page_top = self.y
+
+    def continuation_content(self) -> None:
+        self.finish_page()
+        self.open_page("content")
+        from .section import draw_content_header
+
+        self.y = draw_content_header(self)
+        self._page_top = self.y
+
+    def draw_blocks(
+        self,
+        blocks,
+        *,
+        continuation,
+        x: float = MARGIN,
+        width: float = CONTENT_WIDTH,
+    ) -> None:
+        """Lay out Markdown blocks, splitting them across prose pages."""
+
+        pending = list(blocks)
+        while pending:
+            block = pending[0]
+            fresh = abs(self.y - self._page_top) < 0.01
+            if not fresh and self.available_height <= 1.0:
+                continuation()
+                continue
+
+            flowable = block.flowable
+            if block.space_before and not fresh and self.available_height >= block.space_before:
+                self.y -= block.space_before
+
+            _, height = flowable.wrap(width, PAGE_HEIGHT)
+            if (
+                block.keep_with_next
+                and not fresh
+                and self.available_height < height + block.keep_with_next
+            ):
+                continuation()
+                continue
+
+            if height <= self.available_height:
+                bottom = self.y - height
+                flowable.drawOn(self.canvas, x, bottom)
+                self.record(
+                    block.kind, x, bottom, width, height,
+                    component_type="markdown", label=block.label,
+                )
+                self.y = max(bottom - block.space_after, BOTTOM_SAFE)
+                pending.pop(0)
+                continue
+
+            parts = [] if fresh else flowable.split(width, self.available_height)
+            if not parts and fresh:
+                parts = flowable.split(width, self.available_height)
+                if not parts:
+                    raise ValueError(
+                        "Bloco de Markdown excede a área útil de uma página; "
+                        "divida o texto em blocos menores."
+                    )
+            if not parts:
+                continuation()
+                continue
+
+            first, *rest = parts
+            _, first_height = first.wrap(width, self.available_height)
+            bottom = self.y - first_height
+            first.drawOn(self.canvas, x, bottom)
+            self.record(
+                block.kind, x, bottom, width, first_height,
+                component_type="markdown", label=block.label,
+            )
+            self.y = max(bottom, BOTTOM_SAFE)
+            if not rest:
+                self.y = max(self.y - block.space_after, BOTTOM_SAFE)
+                pending.pop(0)
+                continue
+            pending = [
+                block.continuation(
+                    part, space_after=block.space_after if offset == len(rest) - 1 else 0.0,
+                )
+                for offset, part in enumerate(rest)
+            ] + pending[1:]
+            continuation()
 
     def ensure_space(self, height: float, *, allow_fresh_page_overflow: bool = False) -> None:
         if height <= self.available_height:

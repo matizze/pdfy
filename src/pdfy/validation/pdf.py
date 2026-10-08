@@ -189,7 +189,7 @@ def inspect_pdf(
         issues.append("PDF está criptografado.")
     page_count = len(reader.pages)
     sections = _sections(document)
-    minimum_pages = len(sections) + 2 if document is not None else 3
+    minimum_pages = max(len(sections) + 2, 3) if document is not None else 3
     if page_count < minimum_pages:
         issues.append(f"PDF contém {page_count} páginas; mínimo esperado: {minimum_pages}.")
 

@@ -62,6 +62,17 @@ def draw_section_header(
     return y
 
 
+def draw_content_header(context: RenderContext) -> float:
+    """Minimal chrome for prose pages: logo only, blank middle, ready for text."""
+
+    canvas = context.canvas
+    logo = image_asset("logos", "logo-dark.png")
+    logo_x, logo_y, logo_w, logo_h = MARGIN, PAGE_HEIGHT - 62, 102, 29.1
+    canvas.drawImage(logo, logo_x, logo_y, logo_w, logo_h, preserveAspectRatio=True, mask="auto")
+    context.record("logo", logo_x, logo_y, logo_w, logo_h, label="Matizze", zone="chrome")
+    return PAGE_HEIGHT - 98.0
+
+
 def draw_footer(context: RenderContext) -> None:
     canvas = context.canvas
     page = context.current_page
@@ -72,8 +83,8 @@ def draw_footer(context: RenderContext) -> None:
     canvas.line(MARGIN, FOOTER_LINE_Y, PAGE_WIDTH - MARGIN, FOOTER_LINE_Y)
     canvas.setFillColor(MID)
     canvas.setFont(FONT_REGULAR, 6.6)
-    section = (page.section_title or "DOCUMENTO").upper()
-    left = f"matizze.  •  {section}"
+    section = (page.section_title or "").upper()
+    left = f"matizze.  •  {section}" if section else "matizze."
     canvas.drawString(MARGIN, FOOTER_TEXT_Y, left)
     canvas.drawRightString(PAGE_WIDTH - MARGIN, FOOTER_TEXT_Y, f"{page.number:02d}")
     context.record("footer", MARGIN, FOOTER_TEXT_Y - 2, CONTENT_WIDTH, 15, label=left, zone="chrome")

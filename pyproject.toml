@@ -16,6 +16,7 @@ dependencies = [
   "pypdfium2>=5.12,<6",
   "pypdf>=5.0,<7",
   "reportlab>=4.2,<5",
+  "markdown-it-py>=3.0,<4",
 ]
 
 [project.scripts]
@@ -33,6 +34,7 @@ packages = ["src/pdfy"]
 "schemas/document.schema.json" = "pdfy/schema/document.schema.json"
 "examples/minimal-document.json" = "pdfy/examples/minimal-document.json"
 "examples/complete-document.json" = "pdfy/examples/complete-document.json"
+"examples/markdown-document.json" = "pdfy/examples/markdown-document.json"
 
 [tool.pytest.ini_options]
 addopts = "-q"

@@ -181,6 +181,32 @@ def semantic_issues(data: Any) -> list[ValidationIssue]:
                 )
             )
 
+    has_sections = "sections" in data
+    has_content = "content" in data
+    if has_sections and has_content:
+        issues.append(
+            ValidationIssue(
+                "$",
+                "content_mode_conflict",
+                "informe apenas 'sections' ou 'content', nunca os dois.",
+                "Use componentes dentro de sections ou um único Markdown em content.",
+            )
+        )
+    elif not has_sections and not has_content:
+        issues.append(
+            ValidationIssue(
+                "$",
+                "content_mode_missing",
+                "informe 'sections' ou 'content'.",
+                "sections usa componentes; content usa Markdown corrido.",
+            )
+        )
+    content = data.get("content")
+    if isinstance(content, str) and not content.strip():
+        issues.append(
+            ValidationIssue("$.content", "too_short", "conteúdo Markdown vazio não é permitido.")
+        )
+
     sections = data.get("sections")
     if not isinstance(sections, list):
         return issues
