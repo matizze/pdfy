@@ -553,7 +553,7 @@ pdfy/
 - A contact sheet ajuda a revisão, mas a aprovação visual final continua humana.
 - A regressão visual depende da versão fixada do PDFium e pode exigir novo golden após uma atualização deliberada.
 - O comando exige `--from` com a URL Git; `uvx pdfy` sozinho consulta o pacote homônimo no PyPI e não deve ser usado.
-- Não há licença pública definida neste repositório; resolva isso antes de qualquer distribuição pública.
+- O uso é regido pela licença proprietária da Matizze; consulte [`LICENSE`](LICENSE).
 
 ## Próximas versões recomendadas
 
