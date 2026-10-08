@@ -2,6 +2,28 @@
 
 Todo componente exige `type`. `title` é opcional quando indicado. Valores são conteúdo, nunca instruções visuais.
 
+## Dois modos de documento
+
+O documento raiz usa **um** destes modos, nunca os dois:
+
+- `sections`: lista de seções com componentes. Cada seção começa em página nova com o cabeçalho `SEÇÃO`.
+- `content`: um único texto em **Markdown**. O pdfy pagina o texto corrido mantendo o cabeçalho oficial (logo) e o rodapé com a paginação, sem o chrome de seção. Ideal para relatórios e documentos longos.
+
+## Markdown (campo `content`)
+
+Escrever o Markdown como texto normal; o pdfy aplica a identidade oficial. Recursos suportados:
+
+- títulos `#`, `##`, `###`, `####`;
+- `**negrito**`, `*itálico*`, `~~riscado~~` e `` `código` ``;
+- listas com `-`/`*` e numeradas com `1.`, inclusive aninhadas;
+- citações com `>`;
+- tabelas `| ... |` com alinhamento por coluna (`:---:`, `---:`);
+- blocos de código com cercas ``` ``` ```;
+- links `[texto](url)`;
+- linhas horizontais `---`.
+
+Não há fonte monoespaçada nem itálico verdadeiro: o pdfy usa os pesos oficiais Montserrat. Imagens `![alt](url)` viram legenda com o texto alternativo, porque o renderer não acessa a rede. HTML é tratado como texto simples.
+
 ## Texto e ênfase
 
 - `text`: `content` obrigatório; `title` opcional. Separar parágrafos com linha vazia.

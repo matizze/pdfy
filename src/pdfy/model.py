@@ -77,15 +77,19 @@ class Document:
     recipient: str | None
     date: str | None
     sections: tuple[Section, ...]
+    content: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         result: dict[str, Any] = {
             "schema": self.schema,
             "title": self.title,
-            "sections": [section.to_dict() for section in self.sections],
         }
         for key in ("subtitle", "recipient", "date"):
             value = getattr(self, key)
             if value is not None:
                 result[key] = value
+        if self.content is not None:
+            result["content"] = self.content
+        if self.sections:
+            result["sections"] = [section.to_dict() for section in self.sections]
         return result

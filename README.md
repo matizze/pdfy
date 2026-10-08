@@ -4,6 +4,11 @@ Motor oficial da Matizze para transformar conteúdo JSON estruturado em PDFs A4 
 
 O modelo fornece somente conteúdo. O `pdfy` controla capa, identidade visual, tipografia, cores, margens, componentes, paginação, páginas de continuação e encerramento. O resultado mantém texto, tabelas e gráficos como vetores no PDF.
 
+O conteúdo pode vir de dois modos, mutuamente exclusivos:
+
+- `sections`: componentes estruturados (`text`, `table`, `chart`, ...), cada seção em página nova;
+- `content`: um único texto em **Markdown** para documentos corridos, com títulos, listas, tabelas, citações, código e links. As páginas mantêm o cabeçalho e o rodapé oficiais, sem o chrome de seção.
+
 ## Estado do projeto
 
 - Schema público: `1`.
@@ -22,6 +27,7 @@ O projeto é distribuído diretamente pelo repositório público da Matizze e n�
 
 - A capa é criada a partir de `title`, `subtitle`, `recipient` e `date`.
 - Cada item de `sections` começa em uma página nova.
+- No modo `content`, o Markdown é paginado automaticamente com cabeçalho (logo) e rodapé (paginação) oficiais e sem o rótulo `SEÇÃO`.
 - Componentes longos continuam em páginas adicionais sem reduzir o corpo para um tamanho ilegível.
 - A última página é fixa e obrigatória.
 - O encerramento usa o slogan `Tecnologia como meio, resultado como foco.`.
@@ -191,14 +197,14 @@ Entradas:
 |---|---|---|---|
 | `topic` | `overview`, `component`, `schema` ou `example` | `overview` | Define o nível de descoberta. |
 | `component_type` | string ou `null` | `null` | Obrigatório somente com `topic: "component"`. |
-| `example` | `minimal`, `complete` ou `null` | `null` | Seleciona o exemplo; o padrão para `topic: "example"` é `minimal`. |
+| `example` | `minimal`, `complete`, `markdown` ou `null` | `null` | Seleciona o exemplo; o padrão para `topic: "example"` é `minimal`. |
 
 Comportamento por tópico:
 
-- `overview`: retorna campos obrigatórios e opcionais, regras automáticas, os 13 componentes e um guia de escolha.
+- `overview`: retorna campos obrigatórios e opcionais, regras automáticas, os dois modos de documento (sections e content/Markdown), os 13 componentes e um guia de escolha.
 - `component`: retorna finalidade, campos, limites do schema, definições referenciadas e um exemplo daquele componente.
 - `schema`: retorna o JSON Schema Draft 2020-12 completo.
-- `example`: retorna o documento mínimo ou completo distribuído com o pacote.
+- `example`: retorna o documento mínimo, completo ou em Markdown distribuído com o pacote.
 
 Exemplos de argumentos:
 
@@ -294,7 +300,7 @@ O diretório dos previews usa o nome `<arquivo>-render` ao lado do PDF. Um desti
 
 ## Contrato JSON
 
-Documento mínimo:
+Documento estruturado (componentes):
 
 ```json
 {
@@ -314,20 +320,31 @@ Documento mínimo:
 }
 ```
 
+Documento corrido (Markdown):
+
+```json
+{
+  "schema": "1",
+  "title": "Título do documento",
+  "content": "## Contexto\n\nTexto em **Markdown** com listas, tabelas, citações e links."
+}
+```
+
 Campos da raiz:
 
 | Campo | Obrigatório | Limite |
-|---|---:|---:|
+|---|---|---:|
 | `schema` | sim | valor fixo `1` |
 | `title` | sim | 90 caracteres |
 | `subtitle` | não | 180 caracteres |
 | `recipient` | não | 120 caracteres |
 | `date` | não | data real em `YYYY-MM-DD` |
-| `sections` | sim | 1 a 20 seções |
+| `sections` | condicional | 1 a 20 seções |
+| `content` | condicional | 200.000 caracteres |
 
-Cada seção aceita `title`, `subtitle` opcional e de 1 a 30 `components`. Propriedades desconhecidas são rejeitadas em todos os níveis.
+Informe `sections` **ou** `content`, nunca os dois; um dos dois é obrigatório. Cada seção aceita `title`, `subtitle` opcional e de 1 a 30 `components`. Propriedades desconhecidas são rejeitadas em todos os níveis.
 
-O contrato completo está em [`schemas/document.schema.json`](schemas/document.schema.json). Os documentos de referência estão em [`examples/minimal-document.json`](examples/minimal-document.json) e [`examples/complete-document.json`](examples/complete-document.json).
+O contrato completo está em [`schemas/document.schema.json`](schemas/document.schema.json). Os documentos de referência estão em [`examples/minimal-document.json`](examples/minimal-document.json), [`examples/complete-document.json`](examples/complete-document.json) e [`examples/markdown-document.json`](examples/markdown-document.json).
 
 ## Componentes disponíveis
 
@@ -348,6 +365,14 @@ O contrato completo está em [`schemas/document.schema.json`](schemas/document.s
 | `signature` | Assinaturas | `signers`; `intro` e `title` opcionais |
 
 Consulte [`references/components.md`](references/components.md) para a orientação editorial e [`references/content-limits.md`](references/content-limits.md) para todos os limites. O renderer pagina blocos extensos de forma segura, mas não consegue melhorar conteúdo semanticamente denso; quando um único item for grande demais, divida-o no JSON.
+
+### Modo Markdown (`content`)
+
+Para relatórios e documentos longos que devem parecer documentos de fato, use `content` com Markdown padrão no lugar de `sections`. O pdfy pagina o texto mantendo o cabeçalho (logo) e o rodapé com paginação oficiais, sem o rótulo `SEÇÃO` no meio da página.
+
+Recursos suportados: títulos `#`–`####`, `**negrito**`, `*itálico*`, `~~riscado~~`, `` `código` ``, listas com marcador e numeradas (inclusive aninhadas), citações `>`, tabelas `| ... |` com alinhamento por coluna, blocos de código com cercas, links `[texto](url)` e linhas horizontais `---`.
+
+Limitações: não há fonte monoespaçada nem itálico verdadeiro, então o pdfy usa os pesos oficiais Montserrat; imagens `![alt](url)` viram legenda com o texto alternativo, pois o renderer não acessa a rede; HTML é tratado como texto simples. Veja [`examples/markdown-document.json`](examples/markdown-document.json).
 
 ## Uso como biblioteca Python
 
@@ -496,6 +521,7 @@ pdfy/
 │   ├── creation_options.py    # descoberta do contrato
 │   ├── engine.py              # geração determinística e atômica
 │   ├── parser.py              # leitura e normalização
+│   ├── markdown.py            # Markdown -> blocos pagináveis
 │   ├── registry.py            # type -> renderer
 │   ├── components/            # renderers dos 13 componentes
 │   ├── design/                # tokens visuais centralizados
@@ -522,7 +548,7 @@ pdfy/
 - Existe somente o schema `1` e um template Matizze.
 - O gráfico oficial é de barras horizontais; não há escolha de tipo.
 - `investment` não soma valores nem formata moeda.
-- O renderer não interpreta HTML ou Markdown.
+- O `text` de componentes não interpreta Markdown; para Markdown use o modo `content`. O renderer não interpreta HTML em nenhum modo.
 - A tool de geração escreve no filesystem do computador onde o servidor MCP está rodando, não no computador remoto do modelo.
 - A contact sheet ajuda a revisão, mas a aprovação visual final continua humana.
 - A regressão visual depende da versão fixada do PDFium e pode exigir novo golden após uma atualização deliberada.

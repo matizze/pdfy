@@ -161,7 +161,7 @@ def validate_layout_trace(
         numbers.append(number)
         role = str(page.get("role", ""))
         roles.append(role)
-        if role not in {"cover", "section", "continuation", "closing"}:
+        if role not in {"cover", "section", "continuation", "content", "closing"}:
             issues.append(f"Trace página {number}: role inválido '{role}'.")
 
         safe_area = _bbox(page.get("safe_area"))
