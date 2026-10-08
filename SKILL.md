@@ -26,6 +26,8 @@ Corrigir primeiro o conteúdo. Alterar o renderer somente para defeitos generali
 
 ## JSON mínimo
 
+Modo estruturado, com componentes:
+
 ```json
 {
   "schema": "1",
@@ -41,12 +43,26 @@ Corrigir primeiro o conteúdo. Alterar o renderer somente para defeitos generali
 }
 ```
 
+Modo corrido, com Markdown (útil para relatórios longos com cara de documento):
+
+```json
+{
+  "schema": "1",
+  "title": "Relatório de andamento",
+  "recipient": "Cliente",
+  "date": "2026-10-07",
+  "content": "## Contexto\n\nTexto em **Markdown** com listas, tabelas e citações."
+}
+```
+
+Usar `sections` **ou** `content`, nunca os dois.
+
 ## Guardrails
 
 - Usar somente `pdfy_generate_document` ou `scripts/generate_pdf.py`; não escrever outro gerador.
 - Não inserir `kind`, `template`, layout, fonte, cor, tamanho, margem ou coordenadas no JSON.
 - Não inventar valores, datas, métricas, obrigações ou dados jurídicos/comerciais.
-- Tratar texto como texto simples; não usar HTML ou Markdown.
+- No modo `content`, usar Markdown padrão; não inserir HTML.
 - Preferir mais páginas a condensar conteúdo. Manter títulos curtos e respeitar os limites editoriais.
 - Preservar a capa automática e o encerramento fixo obrigatório.
 - Usar hífen ASCII; evitar travessões Unicode e glifos incomuns.

@@ -18,7 +18,7 @@ Use as tools MCP do `pdfy` para transformar conteúdo estruturado em um PDF Mati
 
 - Não recrie o layout manualmente nem adicione `kind`, `template`, cores, fontes, tamanhos, margens ou coordenadas ao JSON.
 - Não invente valores, datas, métricas, obrigações ou dados jurídicos/comerciais.
-- Trate conteúdo como texto simples: o renderer não interpreta HTML ou Markdown.
+- Use `sections` com componentes ou `content` com Markdown (relatórios corridos), nunca os dois. Não use HTML.
 - Prefira mais páginas a condensar conteúdo; mantenha títulos curtos.
 - Preserve a capa automática e o encerramento Matizze obrigatório.
 - Entregue somente depois de validar e revisar a renderização.

@@ -5,12 +5,13 @@ from __future__ import annotations
 from importlib import resources
 from io import BytesIO
 
-from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.pdfmetrics import registerFontFamily
 from reportlab.pdfbase.ttfonts import TTFont
 
-from .colors import BLUE, DARK, INK, MID, WHITE
+from .colors import BLUE, DARK, INK, LINE, MID, SOFT, WHITE
 
 
 FONT_REGULAR = "PdfyMontserrat"
@@ -42,6 +43,14 @@ def register_fonts() -> None:
     for name, filename in _FONT_FILES.items():
         if name not in registered:
             pdfmetrics.registerFont(TTFont(name, BytesIO(asset_bytes("fonts", filename))))
+    for name in _FONT_FILES:
+        registerFontFamily(
+            name,
+            normal=name,
+            bold=FONT_BOLD,
+            italic=FONT_MEDIUM,
+            boldItalic=FONT_BOLD,
+        )
 
 
 def paragraph_styles() -> dict[str, ParagraphStyle]:
@@ -78,5 +87,44 @@ def paragraph_styles() -> dict[str, ParagraphStyle]:
         "centered_white": ParagraphStyle(
             "PdfyCenteredWhite", fontName=FONT_REGULAR, fontSize=9, leading=13,
             textColor=WHITE, alignment=TA_CENTER,
+        ),
+        "md_body": ParagraphStyle(
+            "PdfyMdBody", fontName=FONT_REGULAR, fontSize=10.4, leading=15.4,
+            textColor=INK, alignment=TA_LEFT,
+        ),
+        "md_h1": ParagraphStyle(
+            "PdfyMdH1", fontName=FONT_BOLD, fontSize=19, leading=23,
+            textColor=DARK,
+        ),
+        "md_h2": ParagraphStyle(
+            "PdfyMdH2", fontName=FONT_SEMIBOLD, fontSize=15, leading=19,
+            textColor=DARK,
+        ),
+        "md_h3": ParagraphStyle(
+            "PdfyMdH3", fontName=FONT_SEMIBOLD, fontSize=12, leading=15.5,
+            textColor=DARK,
+        ),
+        "md_h4": ParagraphStyle(
+            "PdfyMdH4", fontName=FONT_SEMIBOLD, fontSize=10.8, leading=14,
+            textColor=MID,
+        ),
+        "md_quote": ParagraphStyle(
+            "PdfyMdQuote", parent=body, fontName=FONT_REGULAR, fontSize=10.2,
+            leading=15, textColor=MID, leftIndent=14, rightIndent=8,
+            backColor=SOFT, borderColor=LINE, borderWidth=0.5,
+            borderPadding=(8, 8, 8, 8), spaceBefore=0, spaceAfter=0,
+        ),
+        "md_code": ParagraphStyle(
+            "PdfyMdCode", fontName=FONT_REGULAR, fontSize=8.8, leading=12.6,
+            textColor=INK, leftIndent=0, rightIndent=0, backColor=SOFT,
+            borderColor=LINE, borderWidth=0.5, borderPadding=(8, 8, 8, 8),
+        ),
+        "md_table_head": ParagraphStyle(
+            "PdfyMdTableHead", fontName=FONT_SEMIBOLD, fontSize=8.6, leading=11.6,
+            textColor=DARK,
+        ),
+        "md_table_cell": ParagraphStyle(
+            "PdfyMdTableCell", fontName=FONT_REGULAR, fontSize=8.6, leading=11.6,
+            textColor=INK,
         ),
     }

@@ -12,7 +12,7 @@ from pdfy.validation.content import load_schema
 
 
 CreationTopic = Literal["overview", "component", "schema", "example"]
-ExampleName = Literal["minimal", "complete"]
+ExampleName = Literal["minimal", "complete", "markdown"]
 
 _SOURCE_EXAMPLES = Path(__file__).resolve().parents[2] / "examples"
 
@@ -91,6 +91,35 @@ def get_creation_options(
                 "automatic_pages": ["cover", "closing"],
                 "each_section_starts_on_new_page": True,
                 "visual_properties_allowed": False,
+            },
+            "document_modes": {
+                "sections": (
+                    "Modo estruturado: use 'sections' com componentes. "
+                    "Cada seção começa em página nova, com cabeçalho 'SEÇÃO'."
+                ),
+                "content": (
+                    "Modo corrido: use 'content' com Markdown e não use 'sections'. "
+                    "As páginas mantêm cabeçalho e rodapé oficiais, sem chrome de seção."
+                ),
+                "mutually_exclusive": True,
+            },
+            "markdown": {
+                "supported": True,
+                "features": [
+                    "títulos H1 a H4",
+                    "negrito, itálico e riscado",
+                    "listas com marcador e numeradas, inclusive aninhadas",
+                    "citações",
+                    "tabelas com alinhamento por coluna",
+                    "blocos de código e código inline",
+                    "links",
+                    "linhas horizontais",
+                ],
+                "notes": [
+                    "Não há fonte monoespaçada nem itálico verdadeiro; o pdfy usa os pesos oficiais.",
+                    "Imagens em Markdown viram legenda com o texto alternativo; sem download remoto.",
+                    "Não use HTML: ele é tratado como texto simples.",
+                ],
             },
             "components": [
                 {"type": name, "use_for": COMPONENT_PURPOSES[name]}
